@@ -1,0 +1,7 @@
+# Local passwords; see .env.example
+.env
+
+# Custom maps and mods: not ours to redistribute, add them locally
+servers/*/content/**
+!servers/*/content/*/
+!servers/*/content/*/.gitkeep

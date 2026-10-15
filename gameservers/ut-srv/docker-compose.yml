@@ -1,0 +1,53 @@
+x-ut: &ut
+  # host networking so the in-game LAN browser (UDP broadcast) finds the servers
+  network_mode: host
+  init: true          # forwards docker stop to the server
+  restart: unless-stopped
+  entrypoint: ["/bin/bash"]
+
+services:
+  ut99:
+    <<: *ut
+    # UT99 469e (OldUnreal patch) + bonus packs + extra maps + MapVote 3.04
+    image: lacledeslan/gamesvr-ut99-freeplay:latest
+    container_name: ut99
+    command: ["/scripts/ut99.sh"]
+    environment:
+      - PORT=7777            # uses 7777-7778 (game, query) and 8777 (LAN beacon)
+      - WEBADMIN_PORT=5080   # http://<host>:5080/ServerAdmin
+      - SERVER_NAME=UT99 LAN Server
+      - MAP=DM-Deck16][
+      - GAME=dm              # dm | tdm | ctf | dom | as | lms | <Package.Class>
+      - MUTATORS=BDBMapVote304.BDBMapVote   # comma-separated
+      - MAXPLAYERS=16
+      - BOTS=4               # fill up to this many players with bots, 0 = off
+      - OPTIONS=             # extra URL options, e.g. TimeLimit=10?FragLimit=20
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-}
+      - GAME_PASSWORD=${GAME_PASSWORD:-}
+    volumes:
+      - ./scripts:/scripts:ro,z
+      - ./servers/ut99:/server:ro,z              # overrides.ini
+      - ./servers/ut99/content:/content:ro,z     # custom Maps/, Textures/, ...
+
+  ut2004:
+    <<: *ut
+    # UT2004 3369 + bonus packs (ECE, CBP1, CBP2)
+    image: lacledeslan/gamesvr-ut2004:latest
+    container_name: ut2004
+    command: ["/scripts/ut2004.sh"]
+    environment:
+      - PORT=7797            # uses 7797-7798 (game, query) and 10777 (LAN)
+      - WEBADMIN_PORT=5081   # http://<host>:5081/ServerAdmin
+      - SERVER_NAME=UT2004 LAN Server
+      - MAP=DM-Rankin
+      - GAME=dm              # dm | tdm | ctf | vctf | ons | as | br | dom | inv | lms | mut | <Package.Class>
+      - MUTATORS=            # comma-separated, e.g. XGame.MutInstaGib
+      - MAXPLAYERS=16
+      - BOTS=4               # fill up to this many players with bots, 0 = off
+      - OPTIONS=             # extra URL options, e.g. TimeLimit=10?GoalScore=20
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-}
+      - GAME_PASSWORD=${GAME_PASSWORD:-}
+    volumes:
+      - ./scripts:/scripts:ro,z
+      - ./servers/ut2004:/server:ro,z            # overrides.ini
+      - ./servers/ut2004/content:/content:ro,z   # custom Maps/, Textures/, ...
