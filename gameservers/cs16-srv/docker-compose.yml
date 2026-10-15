@@ -1,0 +1,45 @@
+---
+x-cs16: &cs16
+  build: .
+  image: cs16-hlds:local
+  # host networking so the in-game LAN browser (UDP broadcast) finds the servers
+  network_mode: host
+  stdin_open: true   # allows "docker attach" to use the server console
+  tty: true
+  restart: unless-stopped
+  env_file:
+    - path: ./admins.env   # AMX Mod X admins (CS_ADMINS)
+      required: false
+
+services:
+  cs16-classic:
+    <<: *cs16
+    container_name: cs16-classic
+    environment:
+      - PORT=27015
+      - MAP=de_dust2
+      - MAXPLAYERS=16
+      - MODE=classic   # classic | deathmatch | gungame | gungame_ffa
+      - MAPS=stock     # map list without mapcycle.txt: stock | custom | all
+    volumes:
+      - ./shared:/overlay-shared:ro,z
+      - ./servers/classic:/overlay:ro,z
+      - ./logs/classic/hlds:/home/steam/hlds/cstrike/logs:z
+      - ./logs/classic/amxmodx:/home/steam/hlds/cstrike/addons/amxmodx/logs:z
+      - ./navs:/navs:z   # bot navigation meshes, shared
+
+  cs16-fun:
+    <<: *cs16
+    container_name: cs16-fun
+    environment:
+      - PORT=27016
+      - MAP=fy_iceworld
+      - MAXPLAYERS=16
+      - MODE=classic   # classic | deathmatch | gungame | gungame_ffa
+      - MAPS=custom    # map list without mapcycle.txt: stock | custom | all
+    volumes:
+      - ./shared:/overlay-shared:ro,z
+      - ./servers/fun:/overlay:ro,z
+      - ./logs/fun/hlds:/home/steam/hlds/cstrike/logs:z
+      - ./logs/fun/amxmodx:/home/steam/hlds/cstrike/addons/amxmodx/logs:z
+      - ./navs:/navs:z   # bot navigation meshes, shared

@@ -1,0 +1,23 @@
+# Runtime data
+logs/
+navs/
+
+# Local admins (names, passwords); see admins.env.example
+admins.env
+
+# Custom maps and their content: not ours to redistribute, add them locally
+shared/maps/
+servers/*/maps/*
+!servers/*/maps/.gitkeep
+*.wad
+*.res
+servers/*/sound/
+servers/*/models/
+servers/*/gfx/
+servers/*/sprites/
+servers/*/overviews/
+shared/sound/
+shared/models/
+shared/gfx/
+shared/sprites/
+shared/overviews/
