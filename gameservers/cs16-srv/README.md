@@ -50,10 +50,11 @@ CS_ADMINS=Alice:secret, 192.168.1.10, Bob:pw123:cfju
 ```
 
 Entries are `name:password` (the player types `setinfo _pw "secret"` in the
-console once), `name` alone (no password, anyone with that name is admin) or
-an IP; append `:flags` to limit the rights (see the comments in the file).
-All players have the same `STEAM_ID_LAN` on a LAN server, so SteamIDs can't be
-used. `shared/addons/amxmodx/configs/users.ini` works as well.
+console once), `name` alone (no password, anyone with that name is admin), an
+IP, or a SteamID like `STEAM_0:1:2345678`; append `:flags` to limit the rights
+(see the comments in the file). SteamIDs only work over the internet: on a LAN
+server all players have the same `STEAM_ID_LAN`.
+`shared/addons/amxmodx/configs/users.ini` works as well.
 
 - `amxmodmenu` in the console: admin menu (kick, ban, slap, team, maps,
   cvars, weapon restrictions, game modes, ...)
@@ -61,6 +62,28 @@ used. `shared/addons/amxmodx/configs/users.ini` works as well.
   `amxmodmenu`: start a map vote now (`mapm_stop_vote` cancels it)
 - `say /mode`: switch the game mode straight away
 - `amx_gamemode gungame` in the console or rcon
+
+## LAN or internet
+
+Both servers run as LAN servers by default. For the internet, create
+`server.env` from `server.env.example` (not in git):
+
+```
+SV_LAN=0
+SV_PASSWORD=some-password
+```
+
+then `docker compose up -d`; set `SV_LAN=1` (or delete the file) to go back.
+In addition:
+
+- Forward UDP 27015 and 27016 on the router to this machine.
+- Players connect with `password some-password` and then
+  `connect <public IP>:27015` in the console, or via the Internet tab of the
+  server browser (the servers register there; rename them in `server.cfg`).
+- Use passwords or SteamIDs for admins in `admins.env`: with a name-only
+  admin, anyone online using that name is admin.
+- Custom maps download slowly from the game server over the internet; a web
+  server for `sv_downloadurl` fixes that.
 
 ## Bots
 
@@ -99,7 +122,8 @@ e.g. `docker cp cs16-fun:/home/steam/hlds/cstrike/addons/amxmodx/configs/regg/re
 
 ```
 Dockerfile, entrypoint.sh, docker-compose.yml
-admins.env          AMX Mod X admins (CS_ADMINS)
+admins.env          AMX Mod X admins (CS_ADMINS), not in git
+server.env          LAN/internet and join password, not in git
 plugins/            own AMXX plugins, compiled during the build
   lan_menu.sma        /menu
   lan_votekick.sma    /votekick

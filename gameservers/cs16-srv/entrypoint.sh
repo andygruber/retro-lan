@@ -10,6 +10,25 @@ for dir in /overlay-shared /overlay; do
   [ -d "$dir" ] && cp -rf "$dir/." cstrike/
 done
 
+# LAN or internet and join password (server.env). Written into the copied
+# server.cfg, so they also hold when classic mode re-runs it every map.
+SV_LAN=${SV_LAN:-1}
+if [[ $SV_LAN != [01] ]]; then
+  echo "SV_LAN must be 0 or 1, not \"$SV_LAN\"" >&2
+  exit 1
+fi
+sed -i '/^[[:space:]]*sv_lan[[:space:]]/d' cstrike/server.cfg
+echo "sv_lan $SV_LAN" >> cstrike/server.cfg
+if [ -n "$SV_PASSWORD" ]; then
+  if [[ $SV_PASSWORD == *'"'* ]]; then
+    echo "SV_PASSWORD must not contain double quotes" >&2
+    exit 1
+  fi
+  sed -i '/^[[:space:]]*sv_password[[:space:]]/d' cstrike/server.cfg
+  printf 'sv_password "%s"\n' "$SV_PASSWORD" >> cstrike/server.cfg
+fi
+echo "Network: $([ "$SV_LAN" = 1 ] && echo LAN || echo internet)$([ -n "$SV_PASSWORD" ] && echo ', join password set')"
+
 # True if the map has textures that are not embedded in the .bsp. Only then
 # hlds opens the wads the map lists (all of them, fatal error if one is
 # missing). BSP v30: texture lump offset at byte 20; each miptex has its
@@ -107,6 +126,8 @@ fi
 #   name:password[:flags]  name + password (player: setinfo _pw "password")
 #   name[::flags]          name only, no password
 #   ip[:flags]             IP address
+#   STEAM_0:1:2345[:flags] SteamID (only with SV_LAN=0, on a LAN everyone
+#                          is STEAM_ID_LAN)
 # flags default to all rights
 if [ -n "$CS_ADMINS" ]; then
   users=$amxcfg/users.ini
@@ -119,6 +140,11 @@ if [ -n "$CS_ADMINS" ]; then
       [ -n "$e" ] || continue
       if [[ $e == *'"'* ]]; then
         echo "Skipping admin entry with a quote: $e" >&2
+        continue
+      fi
+      if [[ $e =~ ^(STEAM_[0-9]:[0-9]:[0-9]+)(:(.*))?$ ]]; then
+        printf '"%s" "" "%s" "ce"\n' "${BASH_REMATCH[1]}" "${BASH_REMATCH[3]:-abcdefghijklmnopqrstu}"
+        echo "Admin: ${BASH_REMATCH[1]}" >&2
         continue
       fi
       IFS=':' read -r who pw flags <<< "$e"
@@ -149,4 +175,4 @@ echo "Starting in mode $MODE"
 
 export LD_LIBRARY_PATH=".:${LD_LIBRARY_PATH}"
 exec ./hlds_linux -game cstrike -console -port "$PORT" -pingboost 2 \
-  +sv_lan 1 +maxplayers "$MAXPLAYERS" +map "$MAP" "$@"
+  +sv_lan "$SV_LAN" +maxplayers "$MAXPLAYERS" +map "$MAP" "$@"

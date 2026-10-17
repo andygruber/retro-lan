@@ -10,6 +10,8 @@ x-cs16: &cs16
   env_file:
     - path: ./admins.env   # AMX Mod X admins (CS_ADMINS)
       required: false
+    - path: ./server.env   # LAN/internet, join password (SV_LAN, SV_PASSWORD)
+      required: false
 
 services:
   cs16-classic:

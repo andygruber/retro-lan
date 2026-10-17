@@ -2,8 +2,10 @@
 logs/
 navs/
 
-# Local admins (names, passwords); see admins.env.example
+# Local admins (names, passwords) and network settings (join password);
+# see admins.env.example and server.env.example
 admins.env
+server.env
 
 # Custom maps and their content: not ours to redistribute, add them locally
 shared/maps/
