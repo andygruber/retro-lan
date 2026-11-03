@@ -18,6 +18,7 @@ services:
     <<: *cs16
     container_name: cs16-classic
     environment:
+      - NAME=classic       # log dir: logs/classic/
       - PORT=27015
       - MAP=de_dust2
       - MAXPLAYERS=16
@@ -26,14 +27,14 @@ services:
     volumes:
       - ./shared:/overlay-shared:ro,z
       - ./servers/classic:/overlay:ro,z
-      - ./logs/classic/hlds:/home/steam/hlds/cstrike/logs:z
-      - ./logs/classic/amxmodx:/home/steam/hlds/cstrike/addons/amxmodx/logs:z
+      - ./logs:/logs:z   # logs/<NAME>/hlds and logs/<NAME>/amxmodx
       - ./navs:/navs:z   # bot navigation meshes, shared
 
   cs16-fun:
     <<: *cs16
     container_name: cs16-fun
     environment:
+      - NAME=fun       # log dir: logs/fun/
       - PORT=27016
       - MAP=fy_iceworld
       - MAXPLAYERS=16
@@ -42,6 +43,5 @@ services:
     volumes:
       - ./shared:/overlay-shared:ro,z
       - ./servers/fun:/overlay:ro,z
-      - ./logs/fun/hlds:/home/steam/hlds/cstrike/logs:z
-      - ./logs/fun/amxmodx:/home/steam/hlds/cstrike/addons/amxmodx/logs:z
+      - ./logs:/logs:z   # logs/<NAME>/hlds and logs/<NAME>/amxmodx
       - ./navs:/navs:z   # bot navigation meshes, shared
