@@ -82,8 +82,26 @@ In addition:
   server browser (the servers register there; rename them in `server.cfg`).
 - Use passwords or SteamIDs for admins in `admins.env`: with a name-only
   admin, anyone online using that name is admin.
-- Custom maps download slowly from the game server over the internet; a web
-  server for `sv_downloadurl` fixes that.
+- With FastDL (below), set `FASTDL_HOST` to the public IP or hostname and
+  forward TCP 27015 and 27016 as well.
+
+## Fast downloads (FastDL)
+
+By default players download custom maps, wads, sounds and models from the
+game server itself, which is slow (often minutes per map). With FastDL they
+come over HTTP in seconds. In `server.env`:
+
+```
+FASTDL=1
+FASTDL_HOST=192.168.1.50   # IP/hostname players reach this machine at
+```
+
+then `docker compose up -d`. Each server serves its files on TCP with its
+game port (`http://<host>:27015/`, `:27016/`) and sets `sv_downloadurl`.
+Only downloadable content from `shared/` and `servers/<name>/` is served
+(`.bsp .wad .wav .mp3 .mdl .spr .tga .bmp`, `overviews/*.txt`, not `addons/`),
+never configs. Without `FASTDL_HOST` the first IP of the machine is used.
+Files missing over HTTP still come through the in-game download.
 
 ## Bots
 
@@ -123,7 +141,7 @@ e.g. `docker cp cs16-fun:/home/steam/hlds/cstrike/addons/amxmodx/configs/regg/re
 ```
 Dockerfile, entrypoint.sh, docker-compose.yml
 admins.env          AMX Mod X admins (CS_ADMINS), not in git
-server.env          LAN/internet and join password, not in git
+server.env          LAN/internet, join password, FastDL, not in git
 plugins/            own AMXX plugins, compiled during the build
   lan_menu.sma        /menu
   lan_votekick.sma    /votekick

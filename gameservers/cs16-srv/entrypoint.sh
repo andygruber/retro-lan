@@ -29,6 +29,41 @@ if [ -n "$SV_PASSWORD" ]; then
 fi
 echo "Network: $([ "$SV_LAN" = 1 ] && echo LAN || echo internet)$([ -n "$SV_PASSWORD" ] && echo ', join password set')"
 
+# FastDL (server.env): clients download custom maps, wads, sounds, ... over
+# HTTP instead of the slow in-game transfer. Served on TCP with the same
+# port number as the game (UDP). Only downloadable content from the overlays
+# is served, never configs (rcon password, admins).
+FASTDL=${FASTDL:-0}
+if [[ $FASTDL != [01] ]]; then
+  echo "FASTDL must be 0 or 1, not \"$FASTDL\"" >&2
+  exit 1
+fi
+sed -i '/^[[:space:]]*sv_downloadurl[[:space:]]/d' cstrike/server.cfg
+if [ "$FASTDL" = 1 ]; then
+  host=${FASTDL_HOST:-$(hostname -I 2>/dev/null | awk '{print $1}')}
+  if [ -z "$host" ] || [[ $host == *[\"/[:space:]]* ]]; then
+    echo "FASTDL_HOST must be an IP or hostname, not \"$host\"" >&2
+    exit 1
+  fi
+  [ -n "$FASTDL_HOST" ] || echo "FASTDL_HOST not set, using $host"
+  fastdl=/home/steam/fastdl
+  rm -rf "$fastdl" && mkdir -p "$fastdl"
+  for dir in /overlay-shared /overlay; do
+    [ -d "$dir" ] || continue
+    (cd "$dir" && find . -path ./addons -prune -o -type f \
+      \( -iname '*.bsp' -o -iname '*.wad' -o -iname '*.wav' -o -iname '*.mp3' \
+         -o -iname '*.mdl' -o -iname '*.spr' -o -iname '*.tga' -o -iname '*.bmp' \
+         -o -path './overviews/*.txt' \) -print0) |
+    while IFS= read -r -d '' f; do
+      mkdir -p "$fastdl/$(dirname "$f")"
+      ln -f "cstrike/$f" "$fastdl/$f" 2>/dev/null || cp -f "cstrike/$f" "$fastdl/$f"
+    done
+  done
+  busybox httpd -f -p "$PORT" -h "$fastdl" &
+  echo "sv_downloadurl \"http://$host:$PORT/\"" >> cstrike/server.cfg
+  echo "FastDL: http://$host:$PORT/ ($(find "$fastdl" -type f | wc -l) files)"
+fi
+
 # True if the map has textures that are not embedded in the .bsp. Only then
 # hlds opens the wads the map lists (all of them, fatal error if one is
 # missing). BSP v30: texture lump offset at byte 20; each miptex has its

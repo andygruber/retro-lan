@@ -129,6 +129,14 @@ COPY --from=addons --chown=steam:steam /build/out/ /home/steam/hlds/
 RUN sed -i 's|^gamedll_linux .*|gamedll_linux "addons/metamod/metamod_i386.so"|' hlds/cstrike/liblist.gam \
  && grep -q metamod hlds/cstrike/liblist.gam
 
+# small HTTP server for FastDL (FASTDL=1 in server.env); late layer so
+# adding it didn't invalidate the HLDS download above
+USER root
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends busybox \
+ && rm -rf /var/lib/apt/lists/*
+USER steam
+
 COPY --chown=steam:steam entrypoint.sh /home/steam/entrypoint.sh
 
 WORKDIR /home/steam/hlds
