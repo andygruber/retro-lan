@@ -164,6 +164,11 @@ On every start, `shared/` and then `servers/<name>/` are copied over `cstrike/`
 in the container. Any file can be overridden this way, keeping the cstrike
 folder layout.
 
+`logs/` and `navs/` are created on the first start if missing. The container
+starts as root only to hand these mounted dirs to its `steam` user (UID 1000)
+and then runs the server as `steam`, so they are writable no matter who
+created them on the host.
+
 ## Maps
 
 The 25 maps of CS 1.6 (de_dust, de_dust2, de_inferno, cs_office, ...) come

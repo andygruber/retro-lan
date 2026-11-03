@@ -135,9 +135,12 @@ USER root
 RUN apt-get update \
  && apt-get install -y --no-install-recommends busybox \
  && rm -rf /var/lib/apt/lists/*
-USER steam
 
 COPY --chown=steam:steam entrypoint.sh /home/steam/entrypoint.sh
+
+# The entrypoint starts as root only to make the mounted dirs (navs/, logs/)
+# writable for steam (Docker creates missing host dirs as root), then drops
+# to steam; hlds never runs as root.
 
 WORKDIR /home/steam/hlds
 ENV PORT=27015 MAP=de_dust2 MAXPLAYERS=16 MODE=classic MAPS=all

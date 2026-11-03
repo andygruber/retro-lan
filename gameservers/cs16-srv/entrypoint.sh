@@ -1,6 +1,17 @@
 #!/bin/bash
 set -e
 cd /home/steam/hlds
+
+# Started as root: make the bind-mounted dirs writable for steam, then
+# re-run this script as steam. Docker creates a missing host dir (e.g.
+# navs/ or logs/ after a fresh clone) as root, and the host user may have
+# another UID than steam, so the server couldn't write navs and logs.
+if [ "$(id -u)" = 0 ]; then
+  for d in /navs cstrike/logs cstrike/addons/amxmodx/logs; do
+    mountpoint -q "$d" && chown -R steam:steam "$d"
+  done
+  exec setpriv --reuid=steam --regid=steam --init-groups env HOME=/home/steam "$0" "$@"
+fi
 amxcfg=cstrike/addons/amxmodx/configs
 
 # Copy the shared files, then this server's files (server.cfg, mapcycle.txt,
