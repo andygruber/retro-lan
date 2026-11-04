@@ -1,0 +1,4 @@
+# Game files are big and not ours to redistribute: keep them out of git.
+# Only this file is tracked, so the folder exists on a fresh clone.
+*
+!.gitignore
