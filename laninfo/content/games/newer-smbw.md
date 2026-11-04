@@ -1,7 +1,7 @@
 ---
 title: Newer Super Mario Bros. Wii
 short: Newer
-subtitle: Native PC port · version 0.3.1 · LAN co-op
+subtitle: Native PC port · andygruber's build · LAN co-op
 summary: The fan-made Newer campaign as a native Windows/Linux recompilation with LAN co-op. Couch or LAN, up to 4 players.
 genre: Platformer
 year: 2013
@@ -14,35 +14,36 @@ color: "#16a34a"
 downloads:
   - file: Newer Super Mario Bros Wii.zip
     label: Game + Windows and Linux versions
-    notes: Contains `windows/`, `linux/` and the already extracted game files in `game/` (Newer v1.30, USA).
+    notes: Contains `windows/`, `linux/` and the already extracted game files in `game/` (Newer v1.30, USA). The PC port is the build from [andygruber's fork](https://github.com/andygruber/NSMB-Wii-Multiplayer-Recompilation).
 
 links:
-  - { label: NSMB-Wii-Multiplayer-Recompilation, url: "https://github.com/WitherBlitz/NSMB-Wii-Multiplayer-Recompilation" }
+  - { label: "andygruber/NSMB-Wii-Multiplayer-Recompilation (this build)", url: "https://github.com/andygruber/NSMB-Wii-Multiplayer-Recompilation" }
+  - { label: "WitherBlitz/NSMB-Wii-Multiplayer-Recompilation (original)", url: "https://github.com/WitherBlitz/NSMB-Wii-Multiplayer-Recompilation" }
   - { label: Newer Team, url: "https://newerteam.com/wii/" }
 ---
 
-The zip has three folders: `windows`, `linux` and `game`. The program looks for a folder called `game` next to itself, so move `game` into the folder for your system.
+The PC port comes from [andygruber's fork](https://github.com/andygruber/NSMB-Wii-Multiplayer-Recompilation) of WitherBlitz's NSMB Wii recompilation. The zip has three folders: `windows`, `linux` and `game` (the game files). On the first start the program asks where the game files are: pick the `game` folder. It remembers the choice.
 
 ## Install
 
 ### Windows
 
 1. Unpack `Newer Super Mario Bros Wii.zip`.
-2. Move the `game` folder **into** the `windows` folder, so `game` sits next to `NSMBW.exe`.
-3. Start `NSMBW.exe`. If it asks for the game folder, pick that `game` folder.
+2. Start `NSMBW.exe` in the `windows` folder.
+3. When it asks for the game folder, choose the `game` folder from the zip.
 
-Saves and settings are in `Documents\MarioWiiSaveData`.
+Saves and settings are in `Documents\MarioWiiSaveData`. To choose another game folder later, delete the `dvd_root` line in `Config.toml` there.
 
 ### Linux
 
 ```sh
 unzip "Newer Super Mario Bros Wii.zip" -d ~/Games/newer
-cd ~/Games/newer
-mv game linux/
-cd linux
+cd ~/Games/newer/linux
 chmod +x NSMBW compat/NSMBW-compat
 ./NSMBW
 ```
+
+When it asks for the game folder, choose `~/Games/newer/game`. The question comes as a dialog (zenity or kdialog, which normal desktops have).
 
 Needs a Vulkan driver and glibc 2.35 or newer (Fedora 36+, Ubuntu 22.04+, Debian 12+, Arch, SteamOS). X11 and Wayland both work. If it says it found no Vulkan driver:
 
@@ -51,7 +52,7 @@ sudo dnf install mesa-vulkan-drivers vulkan-loader      # Fedora
 sudo apt install mesa-vulkan-drivers libvulkan1         # Ubuntu, Debian
 ```
 
-Saves and settings are in `~/.local/share/WiiCompiled`.
+Saves and settings are in `~/.local/share/WiiCompiled`. To choose another game folder later, delete the `dvd_root` line in `Config.toml` there.
 
 > [!NOTE]
 > On processors without AVX2 (older than ~2013–2015) the game starts the `compat` build by itself. It plays LAN games with everyone else, so keep the `compat` folder.

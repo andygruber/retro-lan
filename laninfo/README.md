@@ -113,11 +113,13 @@ Written from the files in `../games` and the server setups in `../gameservers`:
 |---|---|---|---|
 | `ut99.md` | Unreal Tournament GOTY (469f) | `UT.zip` | 7777 ([ut-srv](../gameservers/ut-srv)) |
 | `ut2004.md` | Unreal Tournament 2004 (3374) | `UT2004.zip` | 7797 ([ut-srv](../gameservers/ut-srv)) |
-| `cs16.md` | Counter-Strike 1.6 | – (Steam) | 27015, 27016 ([cs16-srv](../gameservers/cs16-srv)) |
+| `cs16.md` | Counter-Strike 1.6 | Steam recommended, NextClient as alternative | 27015, 27016 ([cs16-srv](../gameservers/cs16-srv)) |
 | `warcraft3.md` | Warcraft III 1.29.2 | zip + keys | – (player hosts) |
 | `flatout2.md` | FlatOut 2 (GOG) | `Flatout 2.zip` | – (player hosts) |
+| `blur.md` | Blur (DVD image, patch 1.2) | `Blur.zip` | – (player hosts) |
+| `mcm2-reborn.md` | Motocross Madness 2: MCM2:Reborn ([fork](https://github.com/andygruber/MCM2Reborn)) | `MCM2 Reborn.zip` | – (player hosts) |
 | `nfsu2.md` | NFS Underground 2 UG2.net Edition | `.7z` | – (player hosts) |
-| `newer-smbw.md` | Newer Super Mario Bros. Wii PC port | zip | – (player hosts) |
+| `newer-smbw.md` | Newer Super Mario Bros. Wii PC port ([fork](https://github.com/andygruber/NSMB-Wii-Multiplayer-Recompilation)) | zip | – (player hosts) |
 
 The keys file for Warcraft III is a normal download, so everyone on the LAN can
 get it. Remove it from `warcraft3.md` (and the downloads folder) if you'd rather
