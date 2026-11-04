@@ -1,0 +1,3 @@
+# Game files (downloads for laninfo), see games/.gitignore
+/games/*
+!/games/.gitignore
