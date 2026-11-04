@@ -1,0 +1,82 @@
+{{define "content"}}{{with .Game}}
+<a class="back" href="/games">{{icon "arrow-left"}}All games</a>
+
+<section class="game-hero" style="{{.ColorStyle}}">
+  {{template "cover" .}}
+  <div class="game-hero-text">
+    <h1>{{.Title}}</h1>
+    {{- with .Subtitle}}<p class="lead">{{.}}</p>{{end}}
+    <div class="chips">
+      {{- with .Genre}}<span class="chip">{{.}}</span>{{end}}
+      {{- with .Year}}<span class="chip">{{icon "calendar"}}{{.}}</span>{{end}}
+      {{- with .Players}}<span class="chip">{{icon "users"}}{{.}} players</span>{{end}}
+      {{- range .Platforms}}<span class="chip chip-soft">{{.}}</span>{{end}}
+    </div>
+  </div>
+</section>
+
+<div class="game-layout">
+  <aside class="game-aside">
+    {{- if .Downloads}}
+    <section class="card">
+      <h2 class="card-title">{{icon "download"}}Downloads</h2>
+      <ul class="dl-list">
+        {{- range .Downloads}}
+        <li>
+          {{- if .Exists}}
+          <a class="dl" href="{{.URL}}" download>
+            <span class="dl-icon">{{icon "download"}}</span>
+            <span class="dl-main">
+              <span class="dl-label">{{or .Label .Name}}</span>
+              <span class="dl-meta">{{.Name}} · {{size .Size}}{{with .Platform}} · {{.}}{{end}}</span>
+            </span>
+          </a>
+          {{- else}}
+          <div class="dl dl-missing">
+            <span class="dl-icon">{{icon "alert"}}</span>
+            <span class="dl-main">
+              <span class="dl-label">{{or .Label .Name}}</span>
+              <span class="dl-meta">Not available yet ({{.File}})</span>
+            </span>
+          </div>
+          {{- end}}
+          {{- with .NotesHTML}}<p class="dl-notes">{{.}}</p>{{end}}
+        </li>
+        {{- end}}
+      </ul>
+    </section>
+    {{- end}}
+
+    {{- if .Servers}}
+    <section class="card">
+      <h2 class="card-title">{{icon "server"}}Servers</h2>
+      <div class="srv-list">
+      {{- range .Servers}}
+        <div class="srv">
+          <div class="srv-head"><strong>{{.Name}}</strong>{{with .Protocol}}<span class="chip chip-xs">{{.}}</span>{{end}}</div>
+          {{- with .Address}}
+          <div class="mono-copy"><code>{{.}}</code><button class="icon-btn copy-btn" type="button" data-copy="{{.}}" aria-label="Copy address">{{icon "copy"}}</button></div>
+          {{- end}}
+          {{- with .Join}}
+          <div class="srv-join"><span class="srv-join-label">{{icon "terminal"}}Console</span>
+            <div class="mono-copy"><code>{{.}}</code><button class="icon-btn copy-btn" type="button" data-copy="{{.}}" aria-label="Copy command">{{icon "copy"}}</button></div>
+          </div>
+          {{- end}}
+          {{- with .NotesHTML}}<p class="srv-notes">{{.}}</p>{{end}}
+        </div>
+      {{- end}}
+      </div>
+    </section>
+    {{- end}}
+
+    {{- if .Links}}
+    <section class="card">
+      <h2 class="card-title">{{icon "external"}}Links</h2>
+      <ul class="link-list">{{range .Links}}<li><a href="{{.URL}}" target="_blank" rel="noopener">{{.Label}}{{icon "external"}}</a></li>{{end}}</ul>
+    </section>
+    {{- end}}
+  </aside>
+
+  <article class="card prose-card game-body"><div class="prose">{{.Body}}</div></article>
+</div>
+{{end}}{{end}}

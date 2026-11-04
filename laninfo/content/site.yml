@@ -1,0 +1,58 @@
+# ---------------------------------------------------------------------------
+# General settings of the info page.
+# Changes show up on the next page reload, no restart needed.
+# ---------------------------------------------------------------------------
+
+title: Retro LAN
+tagline: Private LAN party. Plug in, download, frag.
+accent: "#7c3aed"            # main color, any CSS color
+footer: "Have fun & play fair · questions? Ask {{organizer}}"
+
+# true: the Downloads page lists every file in the downloads folder,
+# false: only the files referenced by a game.
+show_all_files: true
+
+# Variables: use them as {{name}} here, in pages/*.md and in games/*.md.
+# An environment variable LAN_<NAME> (in ../.env) overrides the value here,
+# e.g. LAN_WIFI_PASSWORD=... overrides wifi_password.
+# Built in: {{host}} (address of this page, with port) and {{server_ip}}.
+vars:
+  # IP of the machine running the game servers. Empty = the address players
+  # used to open this page (right when this page runs on the same machine).
+  server_ip: ""
+  wifi_ssid: RetroLAN
+  wifi_password: change-me
+  wifi_security: WPA          # WPA, WEP or nopass (for the QR code)
+  date: "Fri 18:00 – Sun 14:00"
+  location: "The basement"
+  organizer: Andreas
+
+# Info cards at the top of the start page.
+#   icon: wifi, server, network, calendar, clock, map-pin, key, info, zap,
+#         coffee, phone, users, trophy, help, book, list, terminal
+#   items: label/value rows; copy: true adds a copy button, secret: true blurs
+#          the value until clicked, link: makes it a link, mono: monospace
+#   qr: "wifi" (QR code to join the Wi-Fi) or any text/URL
+#   text: markdown below the rows; wide: true spans the full width
+cards:
+  - title: Wi-Fi
+    icon: wifi
+    qr: wifi
+    items:
+      - { label: Network, value: "{{wifi_ssid}}", copy: true }
+      - { label: Password, value: "{{wifi_password}}", copy: true, mono: true }
+    text: Cable is faster and more stable. Please use the switch for gaming.
+
+  - title: Game servers
+    icon: server
+    items:
+      - { label: Server IP, value: "{{server_ip}}", copy: true, mono: true }
+      - { label: This page, value: "http://{{host}}/", link: "http://{{host}}/" }
+    text: The servers also show up in the in-game **LAN** browsers.
+
+  - title: Event
+    icon: calendar
+    items:
+      - { label: When, value: "{{date}}" }
+      - { label: Where, value: "{{location}}" }
+      - { label: Organizer, value: "{{organizer}}" }

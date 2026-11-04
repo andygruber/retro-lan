@@ -1,0 +1,42 @@
+{{define "content"}}
+<div class="page-head">
+  <h1>Downloads</h1>
+  <p class="lead">{{len .Files}} {{plural (len .Files) "file" "files"}}{{if .TotalSize}} · {{size .TotalSize}} total{{end}} · straight from the LAN, interrupted downloads can be resumed.</p>
+</div>
+
+{{- if .FilesErr}}
+<div class="alert">{{icon "alert"}}<div><strong>Downloads folder not readable</strong><br><code>{{.FilesErr}}</code></div></div>
+{{- end}}
+
+{{- if .Files}}
+<div class="card table-card">
+  <table class="files">
+    <thead><tr><th>File</th><th class="hide-sm">Game</th><th class="num">Size</th><th class="hide-sm">Updated</th></tr></thead>
+    <tbody>
+    {{- range .Files}}
+      <tr>
+        <td>
+          <a class="file-link" href="{{.URL}}" download>{{icon "file"}}<span>{{if .Dir}}<span class="muted">{{.Dir}}/</span>{{end}}{{.Name}}</span></a>
+          {{- if .Games}}<div class="show-sm small muted">{{range $i, $g := .Games}}{{if $i}}, {{end}}{{$g.Title}}{{end}}</div>{{end}}
+        </td>
+        <td class="hide-sm">{{range $i, $g := .Games}}{{if $i}}, {{end}}<a href="/games/{{$g.Slug}}">{{$g.Title}}</a>{{else}}<span class="muted">–</span>{{end}}</td>
+        <td class="num nowrap">{{size .Size}}</td>
+        <td class="hide-sm nowrap muted">{{date .ModTime}}</td>
+      </tr>
+    {{- end}}
+    </tbody>
+  </table>
+</div>
+
+<section class="card prose-card tip-card">
+  <div class="prose">
+    <h3>Download from the command line</h3>
+    <p>Useful for big files: <code>-c</code> / <code>-C -</code> continues an interrupted download.</p>
+    <pre><code>wget -c "http://{{.Host}}{{(index .Files 0).URL}}"
+curl -C - -O "http://{{.Host}}{{(index .Files 0).URL}}"</code></pre>
+  </div>
+</section>
+{{- else if not .FilesErr}}
+<div class="card empty-card"><p>No files yet.</p></div>
+{{- end}}
+{{end}}

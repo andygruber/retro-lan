@@ -1,0 +1,56 @@
+{{define "content"}}
+<section class="hero">
+  <div class="hero-glow" aria-hidden="true"></div>
+  <h1>{{.Site.Title}}</h1>
+  {{- with .Site.Tagline}}<p class="lead">{{.}}</p>{{end}}
+  <div class="hero-actions">
+    <a class="btn btn-primary" href="/games">{{icon "gamepad"}}Browse games</a>
+    <a class="btn" href="/downloads">{{icon "download"}}All downloads</a>
+  </div>
+</section>
+
+{{- if .Site.Cards}}
+<section class="info-grid">
+{{- range $i, $c := .Site.Cards}}
+  <article class="card info-card{{if $c.QR}} has-qr{{end}}{{if $c.Wide}} wide{{end}}">
+    <div class="info-card-main">
+      <h2 class="card-title">{{icon $c.Icon}}{{$c.Title}}</h2>
+      {{- if $c.Items}}
+      <dl class="kv">
+        {{- range $c.Items}}
+        <div class="kv-row">
+          <dt>{{.Label}}</dt>
+          <dd>
+            {{- if .Link}}<a class="value" href="{{.Link}}">{{or .Value .Link}}</a>
+            {{- else if .Secret}}<button class="value secret" type="button" title="Click to show">{{.Value}}</button>
+            {{- else}}<span class="value{{if .Mono}} mono{{end}}">{{.Value}}</span>{{end}}
+            {{- if .Copy}}<button class="icon-btn copy-btn" type="button" data-copy="{{.Value}}" aria-label="Copy {{.Label}}">{{icon "copy"}}</button>{{end}}
+          </dd>
+        </div>
+        {{- end}}
+      </dl>
+      {{- end}}
+      {{- with $c.TextHTML}}<div class="card-text prose">{{.}}</div>{{end}}
+    </div>
+    {{- if $c.QR}}
+    <figure class="qr"><img src="/qr.png?card={{$i}}" alt="QR code for {{$c.Title}}" width="148" height="148"><figcaption>Scan with phone</figcaption></figure>
+    {{- end}}
+  </article>
+{{- end}}
+</section>
+{{- end}}
+
+{{- with .Body}}
+<section class="card prose-card"><div class="prose">{{.}}</div></section>
+{{- end}}
+
+{{- if .Games}}
+<section class="section">
+  <div class="section-head">
+    <h2>Games</h2>
+    <a class="link-more" href="/games">All games {{icon "arrow-right"}}</a>
+  </div>
+  <div class="game-grid">{{range .Games}}{{template "gamecard" .}}{{end}}</div>
+</section>
+{{- end}}
+{{end}}

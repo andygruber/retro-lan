@@ -1,0 +1,29 @@
+{{define "content"}}
+<div class="page-head">
+  <h1>Games</h1>
+  <p class="lead">Everything we play. Click a game for downloads, install steps and servers.</p>
+</div>
+
+{{- if .Games}}
+<div class="toolbar">
+  <label class="search">
+    {{icon "search"}}
+    <input id="game-search" type="search" placeholder="Search games…" autocomplete="off" aria-label="Search games">
+  </label>
+  {{- if gt (len .Platforms) 1}}
+  <div class="segmented" role="group" aria-label="Platform">
+    <button type="button" class="seg" data-platform="" aria-pressed="true">All</button>
+    {{- range .Platforms}}
+    <button type="button" class="seg" data-platform="{{lower .}}" aria-pressed="false">{{.}}</button>
+    {{- end}}
+  </div>
+  {{- end}}
+</div>
+<div class="game-grid" id="game-grid">{{range .Games}}{{template "gamecard" .}}{{end}}</div>
+<p class="empty" id="game-empty" hidden>No game matches.</p>
+{{- else}}
+<div class="card empty-card">
+  <p>No games yet. Add a file to <code>content/games/</code> (copy <code>_template.md</code>).</p>
+</div>
+{{- end}}
+{{end}}

@@ -1,0 +1,70 @@
+{{define "layout"}}<!doctype html>
+<html lang="en"{{with .AccentStyle}} style="{{.}}"{{end}}>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>{{with .PageTitle}}{{.}} · {{end}}{{.Site.Title}}</title>
+<link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+<script>(function(){try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}})();</script>
+<link rel="stylesheet" href="/static/style.css?v={{.Version}}">
+{{- if .HasCustomCSS}}
+<link rel="stylesheet" href="/custom.css?v={{.CustomCSSVersion}}">
+{{- end}}
+<script src="/static/app.js?v={{.Version}}" defer></script>
+</head>
+<body>
+<header class="topbar">
+  <div class="container topbar-inner">
+    <a class="brand" href="/"><span class="brand-mark">{{icon "gamepad"}}</span><span class="brand-text">{{.Site.Title}}</span></a>
+    <nav class="nav" aria-label="Main">
+      <a href="/"{{if eq .Active "home"}} aria-current="page"{{end}}>{{icon "info"}}<span>Info</span></a>
+      <a href="/games"{{if eq .Active "games"}} aria-current="page"{{end}}>{{icon "gamepad"}}<span>Games</span></a>
+      {{- range .Nav}}
+      <a href="/p/{{.Slug}}"{{if eq $.Active .Slug}} aria-current="page"{{end}}>{{icon (or .Icon "file")}}<span>{{.Title}}</span></a>
+      {{- end}}
+      <a href="/downloads"{{if eq .Active "downloads"}} aria-current="page"{{end}}>{{icon "download"}}<span>Downloads</span></a>
+    </nav>
+    <button class="icon-btn theme-toggle" type="button" id="theme-toggle" aria-label="Switch color theme" title="Theme: system">
+      <span class="ti ti-system">{{icon "monitor"}}</span><span class="ti ti-light">{{icon "sun"}}</span><span class="ti ti-dark">{{icon "moon"}}</span>
+    </button>
+  </div>
+</header>
+<main class="container main">
+{{- range .Errors}}
+  <div class="alert" role="alert">{{icon "alert"}}<div><strong>Content problem</strong> <span class="muted">(only the organizer needs to care)</span><br><code>{{.}}</code></div></div>
+{{- end}}
+{{template "content" .}}
+</main>
+<footer class="footer">
+  <div class="container footer-inner">
+    <span>{{with .Site.FooterHTML}}{{.}}{{else}}{{.Site.Title}}{{end}}</span>
+    <span class="muted">Served from <code>{{.Host}}</code></span>
+  </div>
+</footer>
+</body>
+</html>
+{{end}}
+
+{{define "cover"}}<div class="cover">{{if .ImageURL}}<img src="{{.ImageURL}}" alt="" loading="lazy">{{else}}<span class="cover-text">{{.Short}}</span>{{end}}</div>{{end}}
+
+{{define "gamecard"}}
+<a class="game-card" href="/games/{{.Slug}}" style="{{.ColorStyle}}" data-search="{{.SearchText}}" data-platforms="{{.PlatformsAttr}}">
+  {{template "cover" .}}
+  <div class="game-card-body">
+    <h3>{{.Title}}</h3>
+    {{- with .Subtitle}}<p class="game-sub">{{.}}</p>{{end}}
+    {{- with .Summary}}<p class="game-summary">{{.}}</p>{{end}}
+    <div class="chips">
+      {{- with .Genre}}<span class="chip">{{.}}</span>{{end}}
+      {{- with .Players}}<span class="chip">{{icon "users"}}{{.}}</span>{{end}}
+      {{- range .Platforms}}<span class="chip chip-soft">{{.}}</span>{{end}}
+    </div>
+    <div class="game-card-foot">
+      {{- if .Downloads}}<span>{{icon "download"}}{{if .TotalSize}}{{size .TotalSize}}{{else}}–{{end}}</span>{{end}}
+      {{- if .Servers}}<span>{{icon "server"}}{{len .Servers}} {{plural (len .Servers) "server" "servers"}}</span>{{end}}
+      <span class="go">{{icon "arrow-right"}}</span>
+    </div>
+  </div>
+</a>
+{{end}}

@@ -1,0 +1,21 @@
+# LAN party info page + download server.
+#   docker compose up -d --build     build + start
+#   docker compose logs -f           requests and downloads
+# Content in ./content is re-read on every request: edit, reload the browser.
+
+services:
+  laninfo:
+    build: ./server
+    image: laninfo:local
+    container_name: laninfo
+    restart: unless-stopped
+    ports:
+      # host port from .env (LANINFO_PORT), default 80
+      - "${LANINFO_PORT:-80}:8080"
+    env_file:
+      - path: ./.env      # LAN_* variables override content/site.yml vars
+        required: false
+    volumes:
+      - ./content:/data/content:ro,z
+      # the files offered for download; games/*.md reference them by name
+      - ${GAMES_DIR:-../games}:/data/downloads:ro,z
