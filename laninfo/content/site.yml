@@ -41,7 +41,7 @@ cards:
     items:
       - { label: Network, value: "{{wifi_ssid}}", copy: true }
       - { label: Password, value: "{{wifi_password}}", copy: true, mono: true }
-    text: Cable is faster and more stable. Please use the switch for gaming.
+    text: Got a network cable? The switch is faster and more stable than Wi-Fi.
 
   - title: Game servers
     icon: server
@@ -56,3 +56,4 @@ cards:
       - { label: When, value: "{{date}}" }
       - { label: Where, value: "{{location}}" }
       - { label: Organizer, value: "{{organizer}}" }
+      - { label: Entry, value: "10 EUR up front, toast included" }

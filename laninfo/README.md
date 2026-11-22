@@ -120,6 +120,7 @@ Written from the files in `../games` and the server setups in `../gameservers`:
 | `mcm2-reborn.md` | Motocross Madness 2: MCM2:Reborn ([fork](https://github.com/andygruber/MCM2Reborn)) | `MCM2 Reborn.zip` | – (player hosts) |
 | `nfsu2.md` | NFS Underground 2 UG2.net Edition | `.7z` | – (player hosts) |
 | `newer-smbw.md` | Newer Super Mario Bros. Wii PC port ([fork](https://github.com/andygruber/NSMB-Wii-Multiplayer-Recompilation)) | zip | – (player hosts) |
+| `mario-kart-wii.md` | Mario Kart Wii PC port with LAN ([repo](https://github.com/andygruber/MarioKartWiicompiledLAN)) | `MarioKartWiiLAN-2026.11.05-windows-linux.zip` | – (player hosts) |
 
 The keys file for Warcraft III is a normal download, so everyone on the LAN can
 get it. Remove it from `warcraft3.md` (and the downloads folder) if you'd rather
